@@ -1,3 +1,7 @@
+
+<!-- By Daniel Chae and Shemaiah Kamran -->
+<!-- Date:  May 1, 2025  -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,6 +25,7 @@
     <p>Volume: <span id="volText">0</span></p>
   </div>
 
+  
   <div class="control-group">
     <h2>Sound Effect</h2>
     <select id="effectSelect">
@@ -62,6 +67,7 @@
     </div>
   </div>
 
+  
   <script>
     const client = mqtt.connect("wss://test.mosquitto.org:8081")
     const slider = document.getElementById("volumeSlider")
@@ -104,6 +110,8 @@
     })
 
     // Octave Controls
+    // multiplying a frequency by 2 raises a pitch by an octave
+    // dividing a frequency by 2 lowers a pitch by an octave 
     let octave1 = 1
     let octave2 = 1
     
