@@ -17,13 +17,12 @@ from gpiozero import Servo
 # MQTT Setup
 BROKER = "test.mosquitto.org"
 PORT = 1883
-TOPICS = [
-   "cs326/theremin",
-   "cs326/theremin/volume",
-   "cs326/theremin/octave",
-   "cs326/theremin/effect",
-   "cs326/theremin/metronome"
-]
+
+TOPIC_theremin_pitch =  "cs326/theremin",
+TOPIC_theremin_volume =  "cs326/theremin/volume",
+TOPIC_theremin_octave =  "cs326/theremin/octave",
+TOPIC_theremin_effect =   "cs326/theremin/effect",
+TOPIC_theremin_metronome =   "cs326/theremin/metronome"
 
 
 # Audio setup
@@ -237,11 +236,13 @@ def on_message(client, userdata, msg):
 client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 client.on_message = on_message
 client.connect(BROKER, PORT, 60)
-#subscribe to all topics in the topic list 
-for topic in TOPICS:
-   client.subscribe(topic)
-client.loop_start()
 
+# Subscribe to all topics
+client.subscribe(TOPIC_theremin_pitch)
+client.subscribe(TOPIC_theremin_volume)
+client.subscribe(TOPIC_theremin_octave)
+client.subscribe(TOPIC_theremin_effect)
+client.subscribe(TOPIC_theremin_metronome)
 
 try:
    audio_loop()
