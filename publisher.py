@@ -1,3 +1,9 @@
+#
+# By: Danyeol Chae and Shemaiah Kamran
+# Date: April 20, 2025
+# 
+#
+#################################################
 # publisher_pi_theremin.py
 import time
 import RPi.GPIO as GPIO
