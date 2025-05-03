@@ -95,7 +95,9 @@ def audio_loop():
            vol = volume
            effect = effect_type
 
-
+	# Code for effects provided by ChatGPT as we could not find anything on sound effects anywhere else 
+	# the code wasn't copied directly but read through and reframed according to understanding however 
+	# basic understanding was achieved through AI
        # Calculate phase increments
        step1 = 2 * np.pi * freq1 / sample_rate
        step2 = 2 * np.pi * freq2 / sample_rate
@@ -111,7 +113,6 @@ def audio_loop():
 
 
        # Apply selected effect by using variance in the frequencies
-	# Code for effects provided chatGPT as we could not find anything on sound effects anywhere else 
        if effect == "organ":
            s1 = 1.0 * np.sin(phases1) + 0.6 * np.sin(3*phases1) + 0.3 * np.sin(5*phases1)
            s2 = 1.0 * np.sin(phases2) + 0.6 * np.sin(3*phases2) + 0.3 * np.sin(5*phases2)
