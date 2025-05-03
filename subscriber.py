@@ -41,12 +41,12 @@ frequency2 = 440.0
 volume = 0.1
 current_phase = 0.0
 current_phase2 = 0.0
-effect_type = "sine"
-attack_gain = 0.0
-tremolo_phase = 0.0
-vibrato_phase = 0.0
-amplifier1 = 1
-amplifier2 = 1
+effect_type = "sine" # for sound effect 
+attack_gain = 0.0 # for sound effect
+tremolo_phase = 0.0 # for sound effect
+vibrato_phase = 0.0 # for sound effect 
+amplifier1 = 1 # amplifier for octave control
+amplifier2 = 1 # amplifier for ocatve control 
 metronome_running = False
 servo = None
 metronome_thread = None
@@ -69,7 +69,7 @@ def distance_to_note_frequency(cm):
 
 
 
-# mapped frequencies from distance for sensor/ frequency 2
+# mapped frequencies from distance for sensor/ frequency 2, start at lower frequenct/ octave 
 def distance_to_note_frequency_2(cm):
    if cm <= 7:    return 130.8
    elif cm <= 11: return 146.8
