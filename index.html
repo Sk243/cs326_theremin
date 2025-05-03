@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Theremin Control</title>
+  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+  <style>
+    body { max-width: 800px; margin: 0 auto; padding: 20px; }
+    .control-group { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
+    button { padding: 8px 16px; margin: 0 5px; cursor: pointer; }
+    select { padding: 8px; margin: 10px 0; }
+    .metronome-control { display: flex; gap: 10px; align-items: center; }
+  </style>
+</head>
+<body>
+  <h1>Theremin Controller</h1>
+  
+  <div class="control-group">
+    <h2>Volume Control</h2>
+    <input type="range" id="volumeSlider" min="0" max="100" value="0">
+    <p>Volume: <span id="volText">0</span></p>
+  </div>
+
+  <div class="control-group">
+    <h2>Sound Effect</h2>
+    <select id="effectSelect">
+      <option value="sine">Sine Wave</option>
+      <option value="organ">Organ</option>
+      <option value="violin">Violin</option>
+      <option value="harmonium">Harmonium</option>
+    </select>
+  </div>
+
+  <div class="control-group">
+    <h2>Metronome</h2>
+    <div class="metronome-control">
+      <select id="bpmSelect">
+        <option value="40">40 BPM</option>
+        <option value="60">60 BPM</option>
+        <option value="80">80 BPM</option>
+        <option value="100">100 BPM</option>
+        <option value="120" selected>120 BPM</option>
+        <option value="140">140 BPM</option>
+        <option value="160">160 BPM</option>
+      </select>
+      <button id="startMetronome">Start</button>
+      <button id="stopMetronome" disabled>Stop</button>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <h2>Octave Controls</h2>
+    <div>
+      <h3>Main Pitch</h3>
+      <button id="octave1Up">↑</button>
+      <button id="octave1Down">↓</button>
+    </div>
+    <div>
+      <h3>Secondary Pitch</h3>
+      <button id="octave2Up">↑</button>
+      <button id="octave2Down">↓</button>
+    </div>
+  </div>
+
+  <script>
+    const client = mqtt.connect("wss://test.mosquitto.org:8081")
+    const slider = document.getElementById("volumeSlider")
+    const volText = document.getElementById("volText")
+    const effectSelect = document.getElementById("effectSelect")
+    const bpmSelect = document.getElementById("bpmSelect")
+    const startBtn = document.getElementById("startMetronome")
+    const stopBtn = document.getElementById("stopMetronome")
+
+    // Volume Control
+    slider.addEventListener("input", () => {
+      const volume = slider.value
+      volText.textContent = volume
+      client.publish("cs326/theremin/volume", JSON.stringify({ volume: parseInt(volume) }))
+    })
+
+    // Effect Selection
+    effectSelect.addEventListener("change", () => {
+      const effect = effectSelect.value
+      client.publish("cs326/theremin/effect", effect)
+    })
+
+    // Metronome Control
+    startBtn.addEventListener('click', () => {
+      const bpm = bpmSelect.value
+      client.publish("cs326/theremin/metronome", JSON.stringify({
+        command: "start",
+        bpm: parseInt(bpm)
+      }))
+      startBtn.disabled = true
+      stopBtn.disabled = false
+    })
+
+    stopBtn.addEventListener('click', () => {
+      client.publish("cs326/theremin/metronome", JSON.stringify({
+        command: "stop"
+      }))
+      startBtn.disabled = false
+      stopBtn.disabled = true
+    })
+
+    // Octave Controls
+    let octave1 = 1
+    let octave2 = 1
+    
+    function updateOctaveDisplay() {
+      document.getElementById("octave1Up").disabled = octave1 >= 4
+      document.getElementById("octave1Down").disabled = octave1 <= 0.25
+      document.getElementById("octave2Up").disabled = octave2 >= 4
+      document.getElementById("octave2Down").disabled = octave2 <= 0.25
+    }
+
+    function sendOctaveUpdate() {
+      client.publish("cs326/theremin/octave", JSON.stringify({ octave1, octave2 }))
+      updateOctaveDisplay()
+    }
+
+    document.getElementById("octave1Up").addEventListener("click", () => {
+      octave1 *= 2
+      sendOctaveUpdate()
+    })
+
+    document.getElementById("octave1Down").addEventListener("click", () => {
+      octave1 /= 2
+      sendOctaveUpdate()
+    })
+
+    document.getElementById("octave2Up").addEventListener("click", () => {
+      octave2 *= 2
+      sendOctaveUpdate()
+    })
+
+    document.getElementById("octave2Down").addEventListener("click", () => {
+      octave2 /= 2
+      sendOctaveUpdate()
+    })
+
+    // Initial UI update
+    updateOctaveDisplay()
+  </script>
+</body>
+</html>
